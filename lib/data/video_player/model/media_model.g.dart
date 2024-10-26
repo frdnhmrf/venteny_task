@@ -1,0 +1,91 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'media_model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$MediaModelImpl _$$MediaModelImplFromJson(Map<String, dynamic> json) =>
+    _$MediaModelImpl(
+      wrapperType: json['wrapperType'] as String?,
+      kind: json['kind'] as String?,
+      collectionId: (json['collectionId'] as num?)?.toInt(),
+      trackId: (json['trackId'] as num?)?.toInt(),
+      artistName: json['artistName'] as String?,
+      collectionName: json['collectionName'] as String?,
+      trackName: json['trackName'] as String?,
+      collectionCensoredName: json['collectionCensoredName'] as String?,
+      trackCensoredName: json['trackCensoredName'] as String?,
+      collectionArtistId: (json['collectionArtistId'] as num?)?.toInt(),
+      collectionArtistViewUrl: json['collectionArtistViewUrl'] as String?,
+      collectionViewUrl: json['collectionViewUrl'] as String?,
+      trackViewUrl: json['trackViewUrl'] as String?,
+      previewUrl: json['previewUrl'] as String?,
+      artworkUrl30: json['artworkUrl30'] as String?,
+      artworkUrl60: json['artworkUrl60'] as String?,
+      artworkUrl100: json['artworkUrl100'] as String?,
+      collectionPrice: (json['collectionPrice'] as num?)?.toInt(),
+      trackPrice: (json['trackPrice'] as num?)?.toInt(),
+      trackRentalPrice: (json['trackRentalPrice'] as num?)?.toInt(),
+      collectionHdPrice: (json['collectionHdPrice'] as num?)?.toInt(),
+      trackHdPrice: (json['trackHdPrice'] as num?)?.toInt(),
+      trackHdRentalPrice: (json['trackHdRentalPrice'] as num?)?.toInt(),
+      releaseDate: json['releaseDate'] == null
+          ? null
+          : DateTime.parse(json['releaseDate'] as String),
+      collectionExplicitness: json['collectionExplicitness'] as String?,
+      trackExplicitness: json['trackExplicitness'] as String?,
+      discCount: (json['discCount'] as num?)?.toInt(),
+      discNumber: (json['discNumber'] as num?)?.toInt(),
+      trackCount: (json['trackCount'] as num?)?.toInt(),
+      trackNumber: (json['trackNumber'] as num?)?.toInt(),
+      trackTimeMillis: (json['trackTimeMillis'] as num?)?.toInt(),
+      country: json['country'] as String?,
+      currency: json['currency'] as String?,
+      primaryGenreName: json['primaryGenreName'] as String?,
+      contentAdvisoryRating: json['contentAdvisoryRating'] as String?,
+      shortDescription: json['shortDescription'] as String?,
+      longDescription: json['longDescription'] as String?,
+    );
+
+Map<String, dynamic> _$$MediaModelImplToJson(_$MediaModelImpl instance) =>
+    <String, dynamic>{
+      'wrapperType': instance.wrapperType,
+      'kind': instance.kind,
+      'collectionId': instance.collectionId,
+      'trackId': instance.trackId,
+      'artistName': instance.artistName,
+      'collectionName': instance.collectionName,
+      'trackName': instance.trackName,
+      'collectionCensoredName': instance.collectionCensoredName,
+      'trackCensoredName': instance.trackCensoredName,
+      'collectionArtistId': instance.collectionArtistId,
+      'collectionArtistViewUrl': instance.collectionArtistViewUrl,
+      'collectionViewUrl': instance.collectionViewUrl,
+      'trackViewUrl': instance.trackViewUrl,
+      'previewUrl': instance.previewUrl,
+      'artworkUrl30': instance.artworkUrl30,
+      'artworkUrl60': instance.artworkUrl60,
+      'artworkUrl100': instance.artworkUrl100,
+      'collectionPrice': instance.collectionPrice,
+      'trackPrice': instance.trackPrice,
+      'trackRentalPrice': instance.trackRentalPrice,
+      'collectionHdPrice': instance.collectionHdPrice,
+      'trackHdPrice': instance.trackHdPrice,
+      'trackHdRentalPrice': instance.trackHdRentalPrice,
+      'releaseDate': instance.releaseDate?.toIso8601String(),
+      'collectionExplicitness': instance.collectionExplicitness,
+      'trackExplicitness': instance.trackExplicitness,
+      'discCount': instance.discCount,
+      'discNumber': instance.discNumber,
+      'trackCount': instance.trackCount,
+      'trackNumber': instance.trackNumber,
+      'trackTimeMillis': instance.trackTimeMillis,
+      'country': instance.country,
+      'currency': instance.currency,
+      'primaryGenreName': instance.primaryGenreName,
+      'contentAdvisoryRating': instance.contentAdvisoryRating,
+      'shortDescription': instance.shortDescription,
+      'longDescription': instance.longDescription,
+    };

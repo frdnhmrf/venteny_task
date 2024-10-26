@@ -14,9 +14,9 @@ class DBConnection extends Services {
 
   @override
   @protected
-  String generateUrl(String path) => 'https://api.escuelajs.co/api/v1/$path';
+  String generateUrl(String path) => 'https://itunes.apple.com/$path';
 
-  Future<List<dynamic>> get<T>(
+  Future<Map<String, dynamic>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
   }) async {
@@ -42,7 +42,11 @@ class DBConnection extends Services {
         material.debugPrint("\x1B[32m start of Response $path");
         material.debugPrint("\t${json.encode(responseMap)}", wrapWidth: 9999);
         material.debugPrint("\x1B[32m end of Response $path");
-      } catch (e) {}
+      } catch (e) {
+        material.debugPrint("\x1B[32m start of Error $path");
+        material.debugPrint("\t${e.toString()}", wrapWidth: 9999);
+        material.debugPrint("\x1B[32m end of Error $path");
+      }
 
       return responseMap;
     } on CustomException {
