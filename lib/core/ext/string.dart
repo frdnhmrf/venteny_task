@@ -1,0 +1,4 @@
+extension StringExt on String? {
+
+  
+}
