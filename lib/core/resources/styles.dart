@@ -6,9 +6,7 @@ import 'dimens.dart';
 ThemeData appTheme(BuildContext context) => ThemeData(
       fontFamily: GoogleFonts.inter().fontFamily,
       useMaterial3: true,
-      hintColor: Colors.grey,
-      splashColor: Colors.white,
-      primaryColor: Colors.blue,
+      primaryColor: Colors.orange,
       textTheme: TextTheme(
         displayLarge: Theme.of(context).textTheme.displayLarge?.copyWith(
               fontFamily: GoogleFonts.poppins().fontFamily,
@@ -111,7 +109,7 @@ ThemeData appTheme(BuildContext context) => ThemeData(
       ),
       iconTheme: const IconThemeData(
         size: Dimens.iconSm,
-        color: Colors.blue,
+        color: Colors.orange,
       ),
     );
 

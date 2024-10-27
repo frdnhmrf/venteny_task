@@ -16,7 +16,7 @@ class DBConnection extends Services {
   @protected
   String generateUrl(String path) => 'https://itunes.apple.com/$path';
 
-  Future<Map<String, dynamic>> get<T>(
+  Future<T> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
   }) async {
@@ -42,16 +42,24 @@ class DBConnection extends Services {
         material.debugPrint("\x1B[32m start of Response $path");
         material.debugPrint("\t${json.encode(responseMap)}", wrapWidth: 9999);
         material.debugPrint("\x1B[32m end of Response $path");
-      } catch (e) {
-        material.debugPrint("\x1B[32m start of Error $path");
-        material.debugPrint("\t${e.toString()}", wrapWidth: 9999);
-        material.debugPrint("\x1B[32m end of Error $path");
-      }
+      } catch (e) {}
 
-      return responseMap;
+      var s = responseMap;
+
+      debugPrint(s.toString());
+
+      if (s is String) {
+        return json.decode(s);
+      } else if (s is T) {
+        return s;
+      } else {
+        throw CustomException(
+            responseMap['meta']['error'] ?? "Connection Error");
+      }
     } on CustomException {
       rethrow;
     } catch (e) {
+      debugPrint(e.toString());
       throw CustomException('Server error');
     }
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:venteny_test/data/video_player/model/media_model.dart';
 
@@ -17,25 +18,21 @@ class VideoPlayerRemoteDatasourceImpl extends DBConnection
   @override
   Future<List<MediaModel>> getAllMedia(String term, MediaType entity) async {
     try {
-      Map<String, dynamic> data = await get(
+      Map<dynamic, dynamic> data = await get(
         'search',
         queryParameters: {
           'term': term,
-          'entity': entity,
+          'entity': entity.name,
         },
       );
 
-      if (data['resultCount'] != 0) {
-        return data['results']
-            .map(
-              (val) => MediaModel.fromJson(val),
-            )
-            .toList();
-      }
-      return [];
+      List<dynamic> list = data['results'];
+
+      return list.map((e) => MediaModel.fromJson(e)).toList();
     } on CustomException {
       rethrow;
     } catch (e) {
+      debugPrint('error $e');
       throw CustomException('Connection Error');
     }
   }
