@@ -1,4 +1,7 @@
-class Media {
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:equatable/equatable.dart';
+
+class Media extends Equatable {
   final String? wrapperType;
   final String? kind;
   final int? collectionId;
@@ -37,7 +40,7 @@ class Media {
   final String? shortDescription;
   final String? longDescription;
 
-  Media({
+  const Media({
     this.wrapperType,
     this.kind,
     this.collectionId,
@@ -76,6 +79,49 @@ class Media {
     this.shortDescription,
     this.longDescription,
   });
+
+  @override
+  List<Object?> get props {
+    return [
+      wrapperType,
+      kind,
+      collectionId,
+      trackId,
+      artistName,
+      collectionName,
+      trackName,
+      collectionCensoredName,
+      trackCensoredName,
+      collectionArtistId,
+      collectionArtistViewUrl,
+      collectionViewUrl,
+      trackViewUrl,
+      previewUrl,
+      artworkUrl30,
+      artworkUrl60,
+      artworkUrl100,
+      collectionPrice,
+      trackPrice,
+      trackRentalPrice,
+      collectionHdPrice,
+      trackHdPrice,
+      trackHdRentalPrice,
+      releaseDate,
+      collectionExplicitness,
+      trackExplicitness,
+      discCount,
+      discNumber,
+      trackCount,
+      trackNumber,
+      trackTimeMillis,
+      country,
+      currency,
+      primaryGenreName,
+      contentAdvisoryRating,
+      shortDescription,
+      longDescription,
+    ];
+  }
 }
 
 enum MediaType {

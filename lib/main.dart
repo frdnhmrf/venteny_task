@@ -3,7 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:venteny_test/features/video_player/cubit/media_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:venteny_test/features/video_player/view/video_player_page.dart';
-import 'package:venteny_test/features/video_player/view/widget/cubit/video_control_cubit.dart';
+import 'package:venteny_test/features/video_player/view/cubit/video_control_cubit.dart';
 
 import 'app_bloc_observer.dart';
 import 'core/locator.dart';
@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Movie App',
         theme: appTheme(context),
         home: const VideoPlayerPage(),

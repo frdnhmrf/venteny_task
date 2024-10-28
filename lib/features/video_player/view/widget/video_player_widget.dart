@@ -1,8 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:venteny_test/features/video_player/view/widget/cubit/video_control_cubit.dart';
+import 'package:venteny_test/core/resources/styles.dart';
+import 'package:venteny_test/core/widgets/loader.dart';
 import 'package:video_player/video_player.dart';
+
+import 'package:venteny_test/features/video_player/view/cubit/video_control_cubit.dart';
+
+import 'full_screen_video_player_widget.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String path;
@@ -15,13 +21,16 @@ class VideoPlayerWidget extends StatefulWidget {
   State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
+    with WidgetsBindingObserver {
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(widget.path),
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
@@ -37,72 +46,87 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+
+  void _toggleFullScreen() {
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+
+    if (isPortrait) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              FullScreenVideoPlayerWidget(controller: _controller),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _initializeVideoPlayerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            bool isShowButton = context
-                .select((VideoControlCubit cubit) => cubit.state.isShowButton);
-            return AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: BlocSelector<VideoControlCubit, VideoControlState, bool>(
-                selector: (state) {
-                  return state.isShowButton;
-                },
-                builder: (context, showButton) {
-                  return GestureDetector(
-                    onTap: () => showButton
-                        ? context
-                            .read<VideoControlCubit>()
-                            .isShowButton(_controller.value.isPlaying, false)
-                        : context
-                            .read<VideoControlCubit>()
-                            .isShowButton(_controller.value.isPlaying, true),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: <Widget>[
-                        VideoPlayer(_controller),
-                        isShowButton
-                            ? _ControlsOverlay(controller: _controller)
-                            : const SizedBox(),
-                        VideoProgressIndicator(_controller,
-                            allowScrubbing: true),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+      future: _initializeVideoPlayerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          bool isShowButton = context
+              .select((VideoControlCubit cubit) => cubit.state.isShowButton);
+          return AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: BlocSelector<VideoControlCubit, VideoControlState, bool>(
+              selector: (state) {
+                return state.isShowButton;
+              },
+              builder: (context, showButton) {
+                return GestureDetector(
+                  onTap: () => showButton
+                      ? context
+                          .read<VideoControlCubit>()
+                          .isShowButton(_controller.value.isPlaying, false)
+                      : context
+                          .read<VideoControlCubit>()
+                          .isShowButton(_controller.value.isPlaying, true),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      VideoPlayer(_controller),
+                      isShowButton
+                          ? ControlsOverlay(
+                              controller: _controller,
+                              toggleFullScreen: _toggleFullScreen,
+                            )
+                          : const SizedBox(),
+                      VideoProgressIndicator(_controller, allowScrubbing: true),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        } else {
+          return const Center(
+            child: LoadingScreen(
+              size: 100,
+            ),
+          );
+        }
+      },
+    );
   }
 }
 
-class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({required this.controller});
-
-  static const List<double> _examplePlaybackRates = <double>[
-    0.25,
-    0.5,
-    1.0,
-    1.5,
-    2.0,
-    3.0,
-    5.0,
-    10.0,
-  ];
+class ControlsOverlay extends StatelessWidget {
+  const ControlsOverlay({
+    super.key,
+    required this.controller,
+    required this.toggleFullScreen,
+  });
 
   final VideoPlayerController controller;
+  final VoidCallback toggleFullScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -141,22 +165,12 @@ class _ControlsOverlay extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
-                          void pauseVideo() {
-                            controller.pause();
-                            context
-                                .read<VideoControlCubit>()
-                                .isShowButton(controller.value.isPlaying, true);
-                          }
-
-                          void playVideo() {
-                            controller.play();
-                            context.read<VideoControlCubit>().isShowButton(
-                                controller.value.isPlaying, false);
-                          }
-
                           controller.value.isPlaying
-                              ? pauseVideo()
-                              : playVideo();
+                              ? controller.pause()
+                              : controller.play();
+                          context
+                              .read<VideoControlCubit>()
+                              .isShowButton(controller.value.isPlaying, true);
                         },
                         icon: Icon(
                           controller.value.isPlaying
@@ -189,59 +203,49 @@ class _ControlsOverlay extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Align(
-            //   alignment: Alignment.topLeft,
-            //   child: PopupMenuButton<Duration>(
-            //     initialValue: controller.value.captionOffset,
-            //     tooltip: 'Caption Offset',
-            //     onSelected: (Duration delay) {
-            //       controller.setCaptionOffset(delay);
-            //     },
-            //     itemBuilder: (BuildContext context) {
-            //       return <PopupMenuItem<Duration>>[
-            //         for (final Duration offsetDuration in _exampleCaptionOffsets)
-            //           PopupMenuItem<Duration>(
-            //             value: offsetDuration,
-            //             child: Text('${offsetDuration.inMilliseconds}ms'),
-            //           )
-            //       ];
-            //     },
-            //     child: Padding(
-            //       padding: const EdgeInsets.symmetric(
-            //         vertical: 12,
-            //         horizontal: 16,
-            //       ),
-            //       child: Text('${controller.value.captionOffset.inMilliseconds}ms'),
-            //     ),
-            //   ),
-            // ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                onPressed: toggleFullScreen,
+                icon: Icon(
+                  MediaQuery.of(context).orientation == Orientation.portrait
+                      ? Icons.fullscreen
+                      : Icons.fullscreen_exit,
+                  color: Colors.white,
+                  size: 30.0,
+                ),
+              ),
+            ),
             Align(
               alignment: Alignment.topRight,
-              child: PopupMenuButton<double>(
-                initialValue: controller.value.playbackSpeed,
-                tooltip: 'Playback speed',
-                onSelected: (double speed) {
-                  controller.setPlaybackSpeed(speed);
-                },
-                itemBuilder: (BuildContext context) {
-                  return <PopupMenuItem<double>>[
-                    for (final double speed in _examplePlaybackRates)
-                      PopupMenuItem<double>(
-                        value: speed,
-                        child: Text('${speed}x'),
-                      )
-                  ];
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    // Using less vertical padding as the text is also longer
-                    // horizontally, so it feels like it would need more spacing
-                    // horizontally (matching the aspect ratio of the video).
-                    vertical: 12,
-                    horizontal: 16,
+              child: Container(
+                color: Colors.white.withOpacity(0.1),
+                padding: const EdgeInsets.all(0.5),
+                child: PopupMenuButton<double>(
+                  initialValue: controller.value.playbackSpeed,
+                  tooltip: 'Playback speed',
+                  onSelected: (double speed) {
+                    controller.setPlaybackSpeed(speed);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return <PopupMenuItem<double>>[
+                      for (final double speed in [0.5, 1.0, 1.5, 2.0, 3.0, 5.0])
+                        PopupMenuItem<double>(
+                          value: speed,
+                          child: Text(
+                            '${speed}x',
+                            style: TextStyles.labelSm(context),
+                          ),
+                        )
+                    ];
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                    child: Text('${controller.value.playbackSpeed}x'),
                   ),
-                  child: Text('${controller.value.playbackSpeed}x'),
                 ),
               ),
             ),

@@ -16,10 +16,23 @@ class MediaCubit extends Cubit<MediaState> {
   }
 
   void getAllMedia() async {
+    emit(state.copyWith(status: BlocStatus.Loading));
     var params = GetAllMediaParams();
     var response = await _getAllMedia(params);
 
-    response.fold((l) => emit(state.copyWith(message: l.messages)),
-        (r) => emit(state.copyWith(data: r)));
+    response.fold(
+      (l) => emit(
+        state.copyWith(
+          status: BlocStatus.Error,
+          message: l.messages,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          data: r,
+          status: BlocStatus.Loaded,
+        ),
+      ),
+    );
   }
 }

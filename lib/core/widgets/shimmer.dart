@@ -11,14 +11,9 @@ class ShimmerList extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 8.0,
-          crossAxisSpacing: 8.0,
-        ),
+      child: ListView.builder(
         padding: const EdgeInsets.all(8.0),
-        itemCount: 5, // Adjust the count based on your needs
+        itemCount: 5,
         itemBuilder: (context, index) {
           return Column(
             children: [
