@@ -63,6 +63,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
               FullScreenVideoPlayerWidget(controller: _controller),
         ),
       );
+
+      context
+          .read<VideoControlCubit>()
+          .isShowButton(_controller.value.isPlaying, false);
     }
   }
 
@@ -165,12 +169,22 @@ class ControlsOverlay extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () {
+                          void pauseVideo() {
+                            controller.pause();
+                            context
+                                .read<VideoControlCubit>()
+                                .isShowButton(controller.value.isPlaying, true);
+                          }
+
+                          void playVideo() {
+                            controller.play();
+                            context.read<VideoControlCubit>().isShowButton(
+                                controller.value.isPlaying, false);
+                          }
+
                           controller.value.isPlaying
-                              ? controller.pause()
-                              : controller.play();
-                          context
-                              .read<VideoControlCubit>()
-                              .isShowButton(controller.value.isPlaying, true);
+                              ? pauseVideo()
+                              : playVideo();
                         },
                         icon: Icon(
                           controller.value.isPlaying
