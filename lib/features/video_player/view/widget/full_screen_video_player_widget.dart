@@ -22,6 +22,9 @@ class FullScreenVideoPlayerWidget extends StatelessWidget {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       Navigator.pop(context);
+      context
+          .read<VideoControlCubit>()
+          .isShowButton(controller.value.isPlaying, false);
     }
 
     return Scaffold(
