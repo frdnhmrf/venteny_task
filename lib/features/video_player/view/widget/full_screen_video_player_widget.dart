@@ -27,46 +27,45 @@ class FullScreenVideoPlayerWidget extends StatelessWidget {
           .isShowButton(controller.value.isPlaying, false);
     }
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: BlocSelector<VideoControlCubit, VideoControlState, bool>(
-        selector: (state) {
-          return state.isShowButton;
-        },
-        builder: (context, showButton) {
-          return GestureDetector(
-            onTap: () => showButton
-                ? context
-                    .read<VideoControlCubit>()
-                    .isShowButton(controller.value.isPlaying, false)
-                : context
-                    .read<VideoControlCubit>()
-                    .isShowButton(controller.value.isPlaying, true),
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Center(
-                  child: AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: <Widget>[
-                          VideoPlayer(controller),
-                        ],
-                      )),
-                ),
-                showButton
-                    ? ControlsOverlay(
-                        controller: controller,
-                        toggleFullScreen: toggleFullScreen,
-                      )
-                    : const SizedBox(),
-                VideoProgressIndicator(controller, allowScrubbing: true),
-              ],
-            ),
-          );
-        },
-      ),
+    return BlocSelector<VideoControlCubit, VideoControlState, bool>(
+      selector: (state) {
+        return state.isShowButton;
+      },
+      builder: (context, showButton) {
+        return GestureDetector(
+          onTap: () => showButton
+              ? context
+                  .read<VideoControlCubit>()
+                  .isShowButton(controller.value.isPlaying, false)
+              : context
+                  .read<VideoControlCubit>()
+                  .isShowButton(controller.value.isPlaying, true),
+          child: Scaffold(
+              backgroundColor: Colors.black,
+              body: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Center(
+                    child: AspectRatio(
+                        aspectRatio: controller.value.aspectRatio,
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: <Widget>[
+                            VideoPlayer(controller),
+                          ],
+                        )),
+                  ),
+                  showButton
+                      ? ControlsOverlay(
+                          controller: controller,
+                          toggleFullScreen: toggleFullScreen,
+                        )
+                      : const SizedBox(),
+                  VideoProgressIndicator(controller, allowScrubbing: true),
+                ],
+              )),
+        );
+      },
     );
   }
 }
